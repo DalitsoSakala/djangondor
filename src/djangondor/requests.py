@@ -16,6 +16,9 @@ def save_many_and_respond(*models:models.Model,success_status=200,error_status=4
 
 
 def delete_and_respond(model: models.Model):
+    '''
+    Deletes a model and returns a 204 `JsonResponse` response
+    '''
     try:
         model.delete()
         status = 204
@@ -30,6 +33,9 @@ def delete_and_respond(model: models.Model):
 def save_and_respond(
     model: models.Model,/, serialize_with=None, success_status=200, error_status=400,**kwargs
 ):
+    '''
+    Saves a model and return a a json response.
+    '''
     try:
         for key,val in kwargs.items():
             setattr(model,key,val)
