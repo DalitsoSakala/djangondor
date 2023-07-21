@@ -2,8 +2,14 @@
 
 
 def generate_day_interval_choices(divisions_per_hour=4):
+    '''
+    Generates a tuple of fixed time intervals in a day.
+    Each item consists of two `str` items: `(time, time)`.
+    `divisions_per_hour` determines the number of divisions
+    in each hour.
+    '''
     HOURS_IN_DAY = 24
-    
+
     total_divisions = divisions_per_hour * HOURS_IN_DAY
     interval=60//divisions_per_hour
     result:list[tuple[str,str]] = []
@@ -23,4 +29,4 @@ def generate_day_interval_choices(divisions_per_hour=4):
             track_minute = 0
             track_hour += 1
 
-    return result
+    return tuple(result)
