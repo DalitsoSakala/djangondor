@@ -4,6 +4,28 @@ from django.http import JsonResponse
 from django.db import models
 
 
+def save_many_and_respond(*models:models.Model,success_status=200,error_status=400):
+    try:
+        for model in models:
+            model.save()
+
+    except Exception as e:
+        return JsonResponse({"message": e.args[0]}, status=error_status)
+    return JsonResponse({"message": 'saved'}, status=success_status)
+
+
+
+def delete_and_respond(model: models.Model):
+    try:
+        model.delete()
+        status = 204
+        body = {}
+    except:
+        status = 400
+        body = {"message": "Something is keeping you from deleting this object"}
+
+    return JsonResponse(body, status=status)
+
 
 def save_and_respond(
     model: models.Model,/, serialize_with=None, success_status=200, error_status=400,**kwargs
@@ -33,6 +55,8 @@ def form_error_response(form: forms.ModelForm, status=400):
         {"message": "%s %s" % format_form_errors(form)[0]}, status=status
     )
 
+
+
 def process_form(
     form: forms.ModelForm, /, set_fields: Dict = None, error_status=400, respond=False
 ):
@@ -57,3 +81,4 @@ def process_form(
     elif respond:
         return form_error_response(form)
     return None, form_error_response(form, error_status)
+
