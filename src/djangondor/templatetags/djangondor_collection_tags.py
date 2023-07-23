@@ -1,5 +1,4 @@
 from django import template
-from django.urls.resolvers import ResolverMatch
 
 register = template.Library()
 
