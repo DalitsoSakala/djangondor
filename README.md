@@ -20,7 +20,9 @@ pip install djangondor
 
 ## Functions
 
-### dict_values
+### Collections package
+
+#### dict_values
 
 > dict_values can be used to access data in a dict as a tuple
 
@@ -33,7 +35,7 @@ name, height = dict_values(data,'name','height')
 
 ```
 
-### value_list
+#### value_list
 
 > Complements the builtin `Queryset.values_list` returning one data item per entry in the list. However, it only allows you to retrieve one field per item in the queryset.
 
@@ -51,7 +53,7 @@ data = value_list(queryset, 'first_name')
 
 ## Templatetags
 
-## Path tags
+### Path tags
 
 ```html
 {% load djangondor_path_tags%}
@@ -65,9 +67,17 @@ data = value_list(queryset, 'first_name')
 
 <a href="{% url 'index:settings'  %}" class="{% active_path_in 'home_settings' 'profile_settings' %}">Settings</a>
 
+<!-- Would produce the following if navigation matched 'index:home': -->
 
+<a href="/" class="active">Index App</a>
+
+
+
+<a href="/" class="active">Home</a>
+<a href="/about" class="">About</a>
+
+<a href="/settings" class="">Settings</a>
 ```
-
 
 ## License
 
