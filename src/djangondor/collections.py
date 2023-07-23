@@ -12,10 +12,10 @@ def dict_values(target:Dict,*fields):
     return lst
 
 
-def value_list(queryset:QuerySet, *fields: str):
+def value_list(queryset:QuerySet, field: str):
     '''
     Generate an actual value list of one item per entry.
     This is meant to make it easier to retrieve list of items
     from `queryset` and we want an item
     '''
-    return list(map(lambda p: p[0], list(queryset.values_list(*fields))))
+    return list(map(lambda p: p[0], list(queryset.values_list(field))))
