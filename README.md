@@ -1,5 +1,7 @@
 # djangondor
 
+> A collection of utilities to help in django
+
 [![PyPI - Version](https://img.shields.io/pypi/v/djangondor.svg)](https://pypi.org/project/djangondor)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/djangondor.svg)](https://pypi.org/project/djangondor)
 
