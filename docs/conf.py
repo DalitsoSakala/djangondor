@@ -10,8 +10,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
     "sphinx.ext.ifconfig",
-    "autoimage",
-    "code_example",
 ]
 
 todo_include_todos = True
