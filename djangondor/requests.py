@@ -4,21 +4,25 @@ from django.http import JsonResponse
 from django.db import models
 
 
-def save_many_and_respond(*models:models.Model,success_status=200,error_status=400):
+def save_many_and_respond(*models: models.Model, success_status=200, error_status=400):
+    """
+    Saves as many models as there are in `*models`.
+    This function returns a `JsonResponse` having a status `success_status` if saving was successful
+    or returns a `JsonResponse` with status `error_status`.
+    """
     try:
         for model in models:
             model.save()
 
     except Exception as e:
         return JsonResponse({"message": e.args[0]}, status=error_status)
-    return JsonResponse({"message": 'saved'}, status=success_status)
-
+    return JsonResponse({"message": "saved"}, status=success_status)
 
 
 def delete_and_respond(model: models.Model):
-    '''
+    """
     Deletes a model and returns a 204 `JsonResponse` response
-    '''
+    """
     try:
         model.delete()
         status = 204
@@ -31,14 +35,21 @@ def delete_and_respond(model: models.Model):
 
 
 def save_and_respond(
-    model: models.Model,/, serialize_with=None, success_status=200, error_status=400,**kwargs
+    model: models.Model,
+    /,
+    serialize_with=None,
+    success_status=200,
+    error_status=400,
+    **kwargs,
 ):
-    '''
-    Saves a model and return a a json response.
-    '''
+    """
+    Saves a model and return a a `JsonResponse`.
+    The response will have a status of `success_status` if successful or `error_status` if saving
+    did not succeed.
+    """
     try:
-        for key,val in kwargs.items():
-            setattr(model,key,val)
+        for key, val in kwargs.items():
+            setattr(model, key, val)
         model.save()
         return JsonResponse(
             {"message": "saved"} if not serialize_with else serialize_with(model).data,
@@ -49,18 +60,28 @@ def save_and_respond(
 
 
 def format_form_errors(form: forms.ModelForm):
+    """
+    Attempts to read the error messages in the `form`.
+    """
+
     errors = form.errors.as_data()
     keys = list(errors.keys())
     values = list(errors.values())
-    items = [(keys[i], values[i][0].message) for i in range(0, len(errors))]
+    items = [
+        (keys[i], (values[i][0].message or "").replace("_", " "))
+        for i in range(0, len(errors))
+    ]
     return items
 
 
 def form_error_response(form: forms.ModelForm, status=400):
+    '''
+    Returns a `JsonRespnse` with having a representation of error messages
+    from `format_form_errors`.
+    '''
     return JsonResponse(
         {"message": "%s %s" % format_form_errors(form)[0]}, status=status
     )
-
 
 
 def process_form(
@@ -87,4 +108,3 @@ def process_form(
     elif respond:
         return form_error_response(form)
     return None, form_error_response(form, error_status)
-
