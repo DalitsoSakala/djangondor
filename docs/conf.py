@@ -9,7 +9,6 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
-    "sphinx.ext.pngmath",
     "sphinx.ext.ifconfig",
     "epub2",
     "mobi",
