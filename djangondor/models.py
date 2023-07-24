@@ -11,6 +11,7 @@ import uuid
 # # is the same as:
 # description = models.CharField(max_length=200,null=True,default=None,blank=True)
 NULLABLE = {"null": True, "default": None, "blank": True}
+NULLABLE_CHARFIELD = {**NULLABLE, "max_length": 100}
 
 
 # UUID_PK
@@ -22,6 +23,11 @@ NULLABLE = {"null": True, "default": None, "blank": True}
 UUID_PK = {"primary_key": True, "default": uuid.uuid4, "editable": False}
 
 
+def make_choices(*entries):
+    """Make choices to passed to model field `choices` attribute. Each entry has the form `(entry,entry)`"""
+    return [(value, value) for value in entries]
+
+
 class BaseTimestampModel(models.Model):
     """Inherit this model to add time stamps to your models"""
 
@@ -30,10 +36,12 @@ class BaseTimestampModel(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ("updated_at",)
 
 
 class UUIDBaseTimestampModel(BaseTimestampModel):
     """Inherit this model to add have a uuid pk andtimestamp"""
+
     id = models.UUIDField(**UUID_PK)
 
     class Meta:
