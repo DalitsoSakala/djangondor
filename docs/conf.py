@@ -30,8 +30,8 @@ release = ""
 
 # -- Options for HTML output ---------------------------------------------------
 
-html_theme = "book"
-html_theme_path = ["themes"]
+html_theme = "blue"
+# html_theme_path = ["themes"]
 html_title = "Djangondor | A collection Django utilities"
 # html_short_title = None
 # html_logo = None
