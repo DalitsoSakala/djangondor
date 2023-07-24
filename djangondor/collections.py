@@ -23,4 +23,5 @@ def value_list(queryset: QuerySet, field: str):
 
 
 def exclude(source: Dict, *fields_to_exclude: any) -> Dict:
+    '''Eclude the fields specified in `fields_to_exclude` from `source`'''
     return {k: v for k, v in source.items() if k not in fields_to_exclude}
