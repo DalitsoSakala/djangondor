@@ -1,192 +1,32 @@
-# -*- coding: utf-8 -*-
+# Configuration file for the Sphinx documentation builder.
+#
+# For the full list of built-in configuration values, see the documentation:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import sys, os
 
-sys.path.insert(0, os.path.abspath("extensions"))
+sys.path.insert(0, os.path.abspath("../../djangondor"))
 
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.doctest",
-    "sphinx.ext.todo",
-    "sphinx.ext.coverage",
-    "sphinx.ext.ifconfig",
-]
-
-todo_include_todos = True
-templates_path = ["_templates"]
-source_suffix = ".md"
-master_doc = "INDEX"
-exclude_patterns = []
-add_function_parentheses = True
-# add_module_names = True
-# A list of ignored prefixes for module index sorting.
-# modindex_common_prefix = []
-
-project = "Djangondor is a collection Django utilities"
+project = "Djangondor"
 copyright = "2023, Dalitso Sakala"
+author = "Dalitso Sakala"
+release = "1.0.2"
 
-version = ""
-release = ""
+# -- General configuration ---------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-# -- Options for HTML output ---------------------------------------------------
 
-html_theme = "classic"
-# html_theme_path = ["themes"]
-html_title = "Djangondor | A collection Django utilities"
-# html_short_title = None
-# html_logo = None
-# html_favicon = None
+extensions = ["sphinx.ext.autodoc","sphinx_rtd_theme"]
+
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+autodoc_mock_imports = ["django"]
+
+# -- Options for HTML output -------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+
+html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
-html_domain_indices = False
-html_use_index = False
-html_show_sphinx = False
-htmlhelp_basename = "DjangondorDocs"
-html_show_sourcelink = False
-
-# -- Options for LaTeX output --------------------------------------------------
-
-latex_elements = {
-    "papersize": "",
-    "fontpkg": "",
-    "fncychap": "",
-    "maketitle": "\\cover",
-    "pointsize": "",
-    "preamble": "",
-    "releasename": "",
-    "babel": "",
-    "printindex": "",
-    "fontenc": "",
-    "inputenc": "",
-    "classoptions": "",
-    "utf8extra": "",
-}
-
-latex_additional_files = ["mfgan-bw.sty", "mfgan.sty", "_static/cover.png"]
-
-latex_documents = [
-    ("index", "Dalitso Sakala", "manual"),
-]
-
-latex_show_pagerefs = False
-latex_domain_indices = False
-latex_use_modindex = False
-# latex_logo = None
-# latex_show_urls = False
-
-# -- Options for Epub output ---------------------------------------------------
-
-# epub_title = "A collection Django utilities"
-# epub_author = "Dalitso Sakala"
-# epub_publisher = "Dalitso Sakala"
-# epub_copyright = "2023, Dalitso Sakala"
-
-# epub_theme = "epub2"
-
-# The scheme of the identifier. Typical schemes are ISBN or URL.
-# epub_scheme = ''
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-# epub_identifier = ''
-
-# A unique identification for the text.
-# epub_uid = ''
-
-# A tuple containing the cover image and cover page html template filenames.
-# epub_cover = ("_static/cover.png", "epub-cover.html")
-
-# HTML files that should be inserted before the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-# epub_pre_files = []
-
-# HTML files shat should be inserted after the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-# epub_post_files = []
-
-# A list of files that should not be packed into the epub file.
-epub_exclude_files = [
-    "_static/opensearch.xml",
-    "_static/doctools.js",
-    "_static/jquery.js",
-    "_static/searchtools.js",
-    "_static/underscore.js",
-    "_static/basic.css",
-    "search.html",
-    "_static/websupport.js",
-]
-
-# The depth of the table of contents in toc.ncx.
-epub_tocdepth = 2
-
-# Allow duplicate toc entries.
-epub_tocdup = False
-
-
-# -- Options for Mobi output ---------------------------------------------------
-
-mobi_theme = "mobi"
-mobi_title = "Djangondor | A collection Django utilities"
-mobi_author = "Dalitso Sakala"
-mobi_publisher = "Dalitso Sakala"
-mobi_copyright = "2023,Dalitso Sakala"
-
-# The scheme of the identifier. Typical schemes are ISBN or URL.
-# mobi_scheme = ''
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-# mobi_identifier = ''
-
-# A unique identification for the text.
-# mobi_uid = ''
-
-# mobi_cover = "_static/cover.png"
-
-# HTML files that should be inserted before the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-# mobi_pre_files = []
-
-# HTML files shat should be inserted after the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-# mobi_post_files = []
-
-# A list of files that should not be packed into the mobi file.
-mobi_exclude_files = [
-    "_static/opensearch.xml",
-    "_static/doctools.js",
-    "_static/jquery.js",
-    "_static/searchtools.js",
-    "_static/underscore.js",
-    "_static/basic.css",
-    "search.html",
-    "_static/websupport.js",
-]
-
-# The depth of the table of contents in toc.ncx.
-mobi_tocdepth = 2
-
-# Allow duplicate toc entries.
-mobi_tocdup = False
-
-mobi_add_visible_links = False
-
-
-# -- Options for Code Examples output ---------------------------------------------------
-
-
-code_example_dir = "code-example"
-code_add_python_path = ["../py"]
-
-
-################################################################################
-
-
-def setup(app):
-    from sphinx.util.texescape import tex_replacements
-
-    tex_replacements += [
-        ("♮", "$\\natural$"),
-        ("ē", "\=e"),
-        ("♩", "\quarternote"),
-        ("↑", "$\\uparrow$"),
-    ]

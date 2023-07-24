@@ -16,4 +16,4 @@ Quick start
         "djangondor",
     ]
 
-2. See the documentation at <https://github.com/DalitsoSakala/djangondor/blob/main/djangondor/docs/INDEX.md>
+2. See the documentation at <https://djangondor.readthedocs.io>
