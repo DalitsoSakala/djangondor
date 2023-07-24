@@ -1,6 +1,6 @@
 from setuptools import setup
 import os, sys
 
-sys.path.insert(0, os.path.abspath("../djangondor"))
+sys.path.insert(0, os.path.abspath("./djangondor"))
 
 setup()

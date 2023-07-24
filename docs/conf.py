@@ -6,8 +6,10 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import sys, os
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath("../"))
+_path=Path(__file__).parent.parent
+sys.path.insert(0, os.path.abspath(_path))
 
 project = "Djangondor"
 copyright = "2023, Dalitso Sakala"
@@ -18,12 +20,12 @@ release = "1.0.2"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 
-extensions = ["sphinx.ext.autodoc","sphinx_rtd_theme"]
+extensions = ["sphinx.ext.autodoc", "sphinx_rtd_theme"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-# autodoc_mock_imports = ["django"]
+autodoc_mock_imports = ["django"]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
