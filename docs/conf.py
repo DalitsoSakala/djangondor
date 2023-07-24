@@ -10,8 +10,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
     "sphinx.ext.ifconfig",
-    "epub2",
-    "mobi",
     "autoimage",
     "code_example",
 ]
@@ -79,12 +77,12 @@ latex_use_modindex = False
 
 # -- Options for Epub output ---------------------------------------------------
 
-epub_title = "A collection Django utilities"
-epub_author = "Dalitso Sakala"
-epub_publisher = "Dalitso Sakala"
-epub_copyright = "2023, Dalitso Sakala"
+# epub_title = "A collection Django utilities"
+# epub_author = "Dalitso Sakala"
+# epub_publisher = "Dalitso Sakala"
+# epub_copyright = "2023, Dalitso Sakala"
 
-epub_theme = "epub2"
+# epub_theme = "epub2"
 
 # The scheme of the identifier. Typical schemes are ISBN or URL.
 # epub_scheme = ''
