@@ -14,8 +14,8 @@ extensions = [
 
 todo_include_todos = True
 templates_path = ["_templates"]
-source_suffix = ".rst"
-master_doc = "README"
+source_suffix = ".md"
+master_doc = "INDEX"
 exclude_patterns = []
 add_function_parentheses = True
 # add_module_names = True
