@@ -23,9 +23,18 @@ UUID_PK = {"primary_key": True, "default": uuid.uuid4, "editable": False}
 
 
 class BaseTimestampModel(models.Model):
-    '''Inherit this model to add time stamps to your models'''
+    """Inherit this model to add time stamps to your models"""
+
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    class Meta:
+        abstract = True
+
+
+class UUIDBaseTimestampModel(BaseTimestampModel):
+    """Inherit this model to add have a uuid pk andtimestamp"""
+    id = models.UUIDField(**UUID_PK)
 
     class Meta:
         abstract = True
