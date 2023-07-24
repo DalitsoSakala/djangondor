@@ -20,3 +20,12 @@ NULLABLE = {"null": True, "default": None, "blank": True}
 # # is the same as:
 # id=models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 UUID_PK = {"primary_key": True, "default": uuid.uuid4, "editable": False}
+
+
+class BaseTimestampModel(models.Model):
+    '''Inherit this model to add time stamps to your models'''
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    class Meta:
+        abstract = True
