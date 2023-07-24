@@ -25,7 +25,7 @@ Indices and tables
    :members:
 .. automodule:: djangondor.models
    :members:
-.. automodule:: djangondor.requests
+.. automodule:: djangondor.processing
    :members:
 .. automodule:: djangondor.time
    :members:
