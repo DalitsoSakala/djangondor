@@ -9,9 +9,24 @@ def dict_values(target: Dict, *fields):
     """
     lst = []
     for field in fields:
-        lst.append(target[field])
+        lst.append(target.get(field))
     return lst
 
+
+def list_join(data:list):
+    '''Return a string representation of a list with each entry seperated by `,`'''
+    builder=''
+    for i in data:
+        builder+=f'{i},'
+    return builder
+
+
+def get_attrs(data,*attrs:str):
+    '''Get all attributes `attrs` found on an object `data`'''
+    result=[]
+    for attr in attrs:
+        result.append(getattr(data,attr))
+    return result
 
 def value_list(queryset: QuerySet, field: str):
     """

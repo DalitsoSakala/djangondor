@@ -27,6 +27,11 @@ def make_choices(*entries):
     """Make choices to passed to model field `choices` attribute. Each entry has the form `(entry,entry)`"""
     return [(value, value) for value in entries]
 
+def check_if_tables_exist(*table_names: str):
+    '''Check if tables exist in the database'''
+    all_tables = connection.introspection.table_names()
+    tables = set(table_names)
+    return len(tables.intersection(all_tables)) == len(tables)
 
 class BaseTimestampModel(models.Model):
     """Inherit this model to add time stamps to your models"""
