@@ -11,7 +11,8 @@ import uuid
 # # is the same as:
 # description = models.CharField(max_length=200,null=True,default=None,blank=True)
 NULLABLE = {"null": True, "default": None, "blank": True}
-NULLABLE_CHARFIELD = {**NULLABLE, "max_length": 100}
+NULLABLE_CHARFIELD = {**NULLABLE, "max_length": 2250}
+NON_NULL_BLANK_CHARFIELD = {"blank":True, "max_length": 225}
 
 
 # UUID_PK
@@ -29,6 +30,8 @@ def make_choices(*entries):
 
 def check_if_tables_exist(*table_names: str):
     '''Check if tables exist in the database'''
+    from django.db import connection
+
     all_tables = connection.introspection.table_names()
     tables = set(table_names)
     return len(tables.intersection(all_tables)) == len(tables)
