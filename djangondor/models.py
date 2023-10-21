@@ -11,7 +11,7 @@ import uuid
 # # is the same as:
 # description = models.CharField(max_length=200,null=True,default=None,blank=True)
 NULLABLE = {"null": True, "default": None, "blank": True}
-NULLABLE_CHARFIELD = {**NULLABLE, "max_length": 2250}
+NULLABLE_CHARFIELD = {**NULLABLE, "max_length": 250}
 NON_NULL_BLANK_CHARFIELD = {"blank":True, "max_length": 225}
 
 
