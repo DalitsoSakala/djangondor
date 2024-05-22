@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 sphinx-rtd-theme = "*"
-twine = "*"
+twine = "5.1.0"
 
 [dev-packages]
 django = "*"
