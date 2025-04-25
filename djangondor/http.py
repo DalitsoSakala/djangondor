@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.db.models import QuerySet
 from typing import Dict
 from  django.http import JsonResponse
-import pandas as pd
 
 # Create your views here.
 
@@ -37,8 +36,3 @@ def json_response(data:list|tuple|QuerySet|Dict|str=None,status=None,meta=None,n
     
     return response
 
-
-def drop_tz_from_dataframe(df:pd.DataFrame):
-    date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
-    for date_column in date_columns:
-        df[date_column] = df[date_column].dt.tz_localize(None)
