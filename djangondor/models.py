@@ -12,7 +12,7 @@ import uuid
 # description = models.CharField(max_length=200,null=True,default=None,blank=True)
 NULLABLE = {"null": True, "default": None, "blank": True}
 NULLABLE_CHARFIELD = {**NULLABLE, "max_length": 250}
-NULLABLE_FK = {**NULLABLE, "on_delete":models. CASCADE}
+NULLABLE_FK = {**NULLABLE, "on_delete":models. SET_NULL}
 NON_NULL_BLANK_CHARFIELD = {"blank":True, "max_length": 225}
 
 
