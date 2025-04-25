@@ -1,6 +1,12 @@
-from typing import Dict
+from typing import Dict, Iterable
 from django.db.models import QuerySet
 
+
+def distinct_queryset_values(qs:QuerySet,field_or_fields:Iterable[str]|str,*,dict=False):
+    fields=[field_or_fields] if isinstance(field_or_fields,str) else field_or_fields
+    qs= qs.order_by(*fields).distinct(*fields)
+
+    return qs.values(*fields) if dict else qs.values_list(*fields)
 
 def dict_values(target: Dict, *fields):
     """
