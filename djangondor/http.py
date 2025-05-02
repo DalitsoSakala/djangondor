@@ -17,7 +17,7 @@ def json_response(data:list|tuple|QuerySet|Dict|str=None,status=None,meta=None,n
     * When data is `None` or no argument is passed, a blank response is returned
     '''
     is_list=isinstance(data,(list,tuple,set,QuerySet))
-    if data or (meta and is_list) or (isinstance(data,dict) and kwargs):
+    if data or  (isinstance(data,dict) and kwargs) or is_list:
         is_error=isinstance(data,str)
         
         response=JsonResponse(
@@ -34,7 +34,7 @@ def json_response(data:list|tuple|QuerySet|Dict|str=None,status=None,meta=None,n
         )
         response.status_code=status or 400 if is_error else status or 200
     else:
-        response=JsonResponse()
+        response=JsonResponse(None,safe=True)
         response.status_code=status
     
     return response
