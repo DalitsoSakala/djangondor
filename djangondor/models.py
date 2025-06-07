@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import JSONField,Func
 import uuid
 
 # Create your models here.
@@ -55,3 +56,40 @@ class UUIDBaseTimestampModel(BaseTimestampModel):
 
     class Meta:
         abstract = True
+
+class JSONBuildObject(Func):
+    """
+    Build a new JSON object based on the given keys and values (alternating).
+    ```python
+        # Example usage
+        MyModel.objects.update(data=JSONConcat(
+            F('data'),
+            JSONBuildObject(
+                Value('NAME'),  # key
+                F('name'),  # value
+            )
+        ))
+```
+    """
+    output_field = JSONField()
+    function = 'jsonb_build_object'
+
+
+class JSONConcat(Func):
+    """
+    Merge all the given JSON objects together, returning a new one.
+    
+    ```python
+        # Example usage
+        MyModel.objects.update(data=JSONConcat(
+            F('data'),
+            JSONBuildObject(
+                Value('NAME'),  # key
+                F('name'),  # value
+            )
+        ))
+```
+    """
+    output_field = JSONField()
+    arg_joiner = ' || '
+    template = '(%(expressions)s)'
