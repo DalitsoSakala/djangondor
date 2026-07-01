@@ -21,7 +21,11 @@ Indices and tables
 
 
 
+.. automodule:: djangondor.bulk
+   :members:
 .. automodule:: djangondor.collections
+   :members:
+.. automodule:: djangondor.middleware
    :members:
 .. automodule:: djangondor.models
    :members:

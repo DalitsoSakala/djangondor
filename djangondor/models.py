@@ -1,6 +1,12 @@
+from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import JSONField,Func
 import uuid
+
+from .middleware import get_current_user
 
 # Create your models here.
 
@@ -56,6 +62,113 @@ class UUIDBaseTimestampModel(BaseTimestampModel):
 
     class Meta:
         abstract = True
+
+
+class AuditLog(BaseTimestampModel):
+    """A record of a single create/update/delete made to a model that inherits
+    `AuditLogMixin`. `changes` holds `{field: {"old": ..., "new": ...}}` for the
+    fields that changed (empty for deletes)."""
+
+    class Action(models.TextChoices):
+        CREATE = "create", "Create"
+        UPDATE = "update", "Update"
+        DELETE = "delete", "Delete"
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=250)
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    action = models.CharField(max_length=10, choices=Action.choices)
+    changes = models.JSONField(default=dict, blank=True, encoder=DjangoJSONEncoder)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, **NULLABLE_FK)
+
+    class Meta:
+        ordering = ("-created_at",)
+        indexes = [models.Index(fields=["content_type", "object_id"])]
+
+    def __str__(self):
+        return f"{self.get_action_display()} {self.content_type} #{self.object_id}"
+
+
+def _model_tracked_fields(model):
+    # .attname, not .name: for a ForeignKey, .name is e.g. "customer" and getattr()
+    # on it returns the related *instance* (not JSON-serializable, and not what
+    # .values() returns for the same field) — .attname is "customer_id" on both sides
+    # auto_now fields (e.g. `updated_at`) change on every save and would
+    # otherwise show up as noise in every diff
+    return [f.attname for f in model._meta.fields if f.attname != "id" and not getattr(f, "auto_now", False)]
+
+
+class AuditLogMixin(models.Model):
+    """Inherit this to have every `save()`/`delete()` recorded to `AuditLog`: who did
+    it, which fields changed (old and new values) and when. Requires
+    `djangondor.middleware.CurrentUserMiddleware` to be installed to know who "who" is;
+    without it every entry is logged with `user=None`.
+
+    Limitation: this only hooks `Model.save()`/`Model.delete()`. Bulk operations
+    (`QuerySet.bulk_create`, `bulk_update`, `update`, `delete`) go straight to SQL and
+    never call either method, so they are **not** audited by this mixin alone. Use
+    `djangondor.bulk.bulk_create`/`bulk_update` for audited equivalents of the two bulk
+    manager methods.
+    """
+
+    class Meta:
+        abstract = True
+
+    def _tracked_fields(self):
+        return _model_tracked_fields(type(self))
+
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+        old = (
+            {}
+            if is_new
+            else type(self).objects.filter(pk=self.pk).values(*self._tracked_fields()).first() or {}
+        )
+        super().save(*args, **kwargs)
+        new = {field: getattr(self, field) for field in self._tracked_fields()}
+        if is_new:
+            changes = {field: {"old": None, "new": value} for field, value in new.items()}
+        else:
+            changes = {
+                field: {"old": old.get(field), "new": value}
+                for field, value in new.items()
+                if old.get(field) != value
+            }
+        if changes:
+            AuditLog.objects.create(
+                content_type=ContentType.objects.get_for_model(self),
+                object_id=self.pk,
+                action=AuditLog.Action.CREATE if is_new else AuditLog.Action.UPDATE,
+                changes=changes,
+                user=get_current_user(),
+            )
+
+    def delete(self, *args, **kwargs):
+        AuditLog.objects.create(
+            content_type=ContentType.objects.get_for_model(self),
+            object_id=self.pk,
+            action=AuditLog.Action.DELETE,
+            changes={},
+            user=get_current_user(),
+        )
+        super().delete(*args, **kwargs)
+
+
+class AuditableBaseTimestampModel(AuditLogMixin, BaseTimestampModel):
+    """`BaseTimestampModel` with automatic audit logging of every save/delete"""
+
+    class Meta:
+        abstract = True
+        ordering = ("updated_at",)
+
+
+class AuditableUUIDBaseTimestampModel(AuditLogMixin, UUIDBaseTimestampModel):
+    """`UUIDBaseTimestampModel` with automatic audit logging of every save/delete"""
+
+    class Meta:
+        abstract = True
+
 
 class JSONBuildObject(Func):
     """
