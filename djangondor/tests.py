@@ -1,9 +1,11 @@
+from types import SimpleNamespace
+
 from django.contrib.auth import get_user_model
 from django.db import connection, models
 from django.test import TransactionTestCase
 
 from . import bulk
-from .middleware import _current_user
+from .middleware import _current_request, get_current_user, run_as
 from .models import AuditableBaseTimestampModel, AuditableUUIDBaseTimestampModel, AuditLog
 
 
@@ -55,8 +57,9 @@ class AuditLogMixinTests(TransactionTestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user("alice", password="pw")
-        self.token = _current_user.set(self.user)
-        self.addCleanup(_current_user.reset, self.token)
+        self._run_as = run_as(self.user)
+        self._run_as.__enter__()
+        self.addCleanup(self._run_as.__exit__, None, None, None)
 
     def test_create_logs_all_fields_with_no_old_value(self):
         widget = AuditWidget.objects.create(name="a")
@@ -140,3 +143,32 @@ class AuditLogMixinTests(TransactionTestCase):
         widget.save()
         log = AuditLog.objects.get(action=AuditLog.Action.UPDATE, object_id=widget.pk)
         self.assertEqual(log.changes, {"category_id": {"old": cat_a.pk, "new": cat_b.pk}})
+
+    def test_get_current_user_with_request_user_set_once_like_plain_django_auth(self):
+        # ordinary case: session auth resolves request.user before this middleware
+        # ever runs, so it's already final and never reassigned
+        fake_request = SimpleNamespace(user=self.user)
+        token = _current_request.set(fake_request)
+        try:
+            widget = AuditWidget.objects.create(name="a")
+            log = AuditLog.objects.get(action=AuditLog.Action.CREATE, object_id=widget.pk)
+            self.assertEqual(log.user, self.user)
+        finally:
+            _current_request.reset(token)
+
+    def test_get_current_user_reflects_late_reassignment_of_request_user(self):
+        # DRF case: TokenAuthentication/JWT/etc. run inside dispatch() —
+        # i.e. after CurrentUserMiddleware has already stashed the request — so
+        # request.user gets reassigned mid-flight. get_current_user() must read it
+        # lazily, not a value snapshotted when the middleware first ran.
+        fake_request = SimpleNamespace(user=None)
+        token = _current_request.set(fake_request)
+        try:
+            self.assertIsNone(get_current_user())  # not authenticated yet
+            fake_request.user = self.user  # e.g. DRF's perform_authentication()
+            self.assertEqual(get_current_user(), self.user)
+            widget = AuditWidget.objects.create(name="a")
+            log = AuditLog.objects.get(action=AuditLog.Action.CREATE, object_id=widget.pk)
+            self.assertEqual(log.user, self.user)
+        finally:
+            _current_request.reset(token)
